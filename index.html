@@ -145,7 +145,7 @@ body.opened #gate{opacity:0; visibility:hidden}
 @keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
 
 /* ═══════════════════════════ sections ═════════════════════════════════ */
-.sec{position:relative; padding:70px 34px; text-align:center}
+.sec{position:relative; padding:50px 34px 50px; text-align:center}
 .sec.tint{background:linear-gradient(180deg,rgba(251,243,241,0) 0%,var(--wash) 12%,var(--wash) 88%,rgba(251,243,241,0) 100%)}
 .sec .corner{
   position:absolute; width:118px; opacity:.42; pointer-events:none;
@@ -280,15 +280,15 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 }
 
 /* contacts */
-.cards{display:grid; gap:16px; max-width:var(--block); margin:6px auto 0}
-.ccard{padding:24px 20px; border:1px solid var(--line); border-radius:4px; background:rgba(255,255,255,.72)}
+.cards{display:grid; gap:12px; max-width:var(--block); margin:6px auto 0}
+.ccard{padding:18px 20px; border:1px solid var(--line); border-radius:4px; background:rgba(255,255,255,.72)}
 .cava{
-  width:44px; height:44px; margin:0 auto 12px; border-radius:50%; display:grid; place-items:center;
+  width:40px; height:40px; margin:0 auto 10px; border-radius:50%; display:grid; place-items:center;
   font-family:var(--title); font-size:18px; color:#fff; background:var(--wine);
 }
 .ccard.bride .cava{background:var(--blush)}
 .crole{font-family:var(--ui); font-size:8.5px; letter-spacing:.26em; text-transform:uppercase; color:var(--rose)}
-.cname{font-family:var(--title); font-size:17px; color:var(--ink); margin:6px 0 14px; letter-spacing:.04em}
+.cname{font-family:var(--title); font-size:17px; color:var(--ink); margin:5px 0 12px; letter-spacing:.04em}
 .cbtns{display:flex; gap:9px; justify-content:center}
 .cbtn{
   display:inline-flex; align-items:center; gap:7px; text-decoration:none;
@@ -514,8 +514,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   <!-- ────────────────────── TARIKH & MASA ─────────────────────── -->
   <section class="sec tint" id="tarikh">
     <div class="eyebrow rv">Save The Date</div>
-    <h2 class="h2 rv">Tarikh &amp; Masa</h2>
-    <div class="sub rv">Date &amp; Time</div>
+    <h2 class="h2 rv" style="margin-bottom:22px">Tarikh &amp; Masa</h2>
 
     <div class="datecard rv d1">
       <div class="dow">Ahad</div>
@@ -541,8 +540,18 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </a>
     </div>
 
-    <img class="divider rv d3" src="assets/garis-bunga.svg?v=2" alt="">
+    <h2 class="h2 rv" style="margin:30px 0 18px">Menghitung Hari</h2>
+    <div class="cd rv d1">
+      <div class="cd-b"><div class="cd-n" id="cdD">--</div><div class="cd-l">Hari</div></div>
+      <div class="cd-b"><div class="cd-n" id="cdH">--</div><div class="cd-l">Jam</div></div>
+      <div class="cd-b"><div class="cd-n" id="cdM">--</div><div class="cd-l">Minit</div></div>
+      <div class="cd-b"><div class="cd-n" id="cdS">--</div><div class="cd-l">Saat</div></div>
+    </div>
+  </section>
 
+  <!-- ────────────────────────── ATUR CARA ─────────────────────── -->
+  <section class="sec" id="aturcara">
+    <img class="corner is-tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <div class="eyebrow rv">Aturcara</div>
     <h2 class="h2 rv" style="margin-bottom:24px">Atur Cara Majlis</h2>
 
@@ -569,20 +578,11 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </div>
     </div>
 
-    <img class="divider rv" src="assets/garis-bunga.svg?v=2" alt="">
-
-    <div class="eyebrow rv">Countdown</div>
-    <h2 class="h2 rv" style="margin-bottom:22px">Menghitung Hari</h2>
-    <div class="cd rv d1">
-      <div class="cd-b"><div class="cd-n" id="cdD">--</div><div class="cd-l">Hari</div></div>
-      <div class="cd-b"><div class="cd-n" id="cdH">--</div><div class="cd-l">Jam</div></div>
-      <div class="cd-b"><div class="cd-n" id="cdM">--</div><div class="cd-l">Minit</div></div>
-      <div class="cd-b"><div class="cd-n" id="cdS">--</div><div class="cd-l">Saat</div></div>
-    </div>
+    <img class="corner is-br" src="assets/sudut-bunga.svg?v=2" alt="">
   </section>
 
   <!-- ─────────────────────────── LOKASI ───────────────────────── -->
-  <section class="sec" id="lokasi">
+  <section class="sec tint" id="lokasi">
     <img class="corner is-tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <div class="eyebrow rv">Venue</div>
     <h2 class="h2 rv">Lokasi Majlis</h2>
@@ -602,8 +602,12 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </a>
     </div>
 
-    <div class="rv d3">
-      <img class="divider" src="assets/garis-bunga.svg?v=2" alt="">
+    <img class="corner is-br" src="assets/sudut-bunga.svg?v=2" alt="">
+  </section>
+
+  <!-- ────────────────────────── ARAH MASUK ────────────────────── -->
+  <section class="sec" id="masuk">
+    <div class="rv">
       <div class="eyebrow">Pintu Masuk</div>
       <h2 class="h2" style="margin-bottom:4px">Arah Masuk</h2>
       <div class="sub">Masuk dari Jalan PS 7, Batu Caves</div>
@@ -695,7 +699,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
     <div class="gb rv d1">
       <input id="gbName" type="text" maxlength="40" placeholder="Nama anda" aria-label="Nama anda">
-      <textarea id="gbMsg" rows="3" maxlength="240" placeholder="Ucapan &amp; doa..." aria-label="Ucapan dan doa"></textarea>
+      <textarea id="gbMsg" rows="2" maxlength="240" placeholder="Ucapan &amp; doa..." aria-label="Ucapan dan doa"></textarea>
       <button class="btn" id="gbSend">Hantar Ucapan</button>
     </div>
 
@@ -892,7 +896,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   var GB_API = EVENT.gbApi;
   var listEl = $("#gbList"), countEl = $("#gbCount"), moreEl = $("#gbMore");
   var wishes = [], expanded = false;
-  var SHOW = 4;                                   // berapa yang dipapar sebelum "lihat semua"
+  var SHOW = 3;                                   // berapa yang dipapar sebelum "lihat semua"
   var BULAN = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
 
   function esc(s){
