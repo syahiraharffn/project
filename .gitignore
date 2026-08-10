@@ -1,0 +1,7 @@
+# fail pratonton sementara (dijana semasa menguji susun atur)
+_*.html
+
+# sampah sistem
+Thumbs.db
+desktop.ini
+.DS_Store
