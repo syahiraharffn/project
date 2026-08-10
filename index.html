@@ -828,6 +828,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     playMusic();
     startReveal();
     setTimeout(function(){ window.scrollTo(0,0); }, 40);
+    setTimeout(startDrift, 2600);            // biar hero sempat muncul dahulu
   });
 
   /* ───────────── reveal on scroll ─────────────
@@ -839,6 +840,60 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   }, { threshold:0.14, rootMargin:"0px 0px -8% 0px" });
 
   function startReveal(){ $$(".rv").forEach(function(el){ io.observe(el); }); }
+
+  /* ───────────── hanyutan pembuka ─────────────
+     Sebaik jemputan dibuka, halaman menghanyut turun perlahan sekali sahaja
+     supaya tetamu nampak ada kandungan di bawah. Ia berhenti serta-merta
+     pada sentuhan, skrol atau kekunci pertama, dan tidak berulang lagi. */
+  var DRIFT_EVENTS = ["wheel", "touchstart", "keydown", "mousedown"];
+  var drifting = false, driftRaf = 0, driftLast = 0, driftEnd = 0;
+  var driftBegan = 0, driftStuck = 0, driftPrevY = -1;
+
+  function stopDrift(){
+    if(!drifting) return;
+    drifting = false;
+    cancelAnimationFrame(driftRaf);
+    DRIFT_EVENTS.forEach(function(ev){ window.removeEventListener(ev, stopDrift); });
+    document.documentElement.style.scrollBehavior = "";   // pulangkan skrol lancar untuk pautan nav
+  }
+
+  function driftStep(ts){
+    if(!drifting) return;
+    if(!driftLast){ driftLast = ts; driftBegan = ts; }
+    var dt = Math.min(ts - driftLast, 50);                // lindung daripada lompatan bila tab tidak aktif
+    driftLast = ts;
+
+    var y = window.pageYOffset;
+    if(y >= driftEnd - 1){ stopDrift(); return; }
+
+    /* Dua brek keselamatan supaya gelung ini mustahil berjalan selamanya:
+       had masa, dan had bila skrol langsung tidak bergerak. */
+    if(ts - driftBegan > 12000){ stopDrift(); return; }
+    if(Math.abs(y - driftPrevY) < 0.5){
+      if(++driftStuck > 30){ stopDrift(); return; }
+    } else {
+      driftStuck = 0;
+    }
+    driftPrevY = y;
+
+    window.scrollTo(0, Math.min(y + dt * 0.15, driftEnd));   // lebih kurang 150px sesaat
+    driftRaf = requestAnimationFrame(driftStep);
+  }
+
+  function startDrift(){
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if(window.pageYOffset > 20) return;                   // tetamu sudah skrol sendiri
+    var first = document.querySelector(".shell > .sec");
+    if(!first) return;
+    driftEnd = first.getBoundingClientRect().top + window.pageYOffset - 6;
+    if(driftEnd <= 0) return;
+    drifting = true;
+    driftLast = 0; driftBegan = 0; driftStuck = 0; driftPrevY = -1;
+    /* scroll-behavior:smooth akan bergaduh dengan setiap panggilan scrollTo */
+    document.documentElement.style.scrollBehavior = "auto";
+    DRIFT_EVENTS.forEach(function(ev){ window.addEventListener(ev, stopDrift, {passive:true}); });
+    driftRaf = requestAnimationFrame(driftStep);
+  }
 
   /* ───────────── petals ───────────── */
   (function(){
