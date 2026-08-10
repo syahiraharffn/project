@@ -310,6 +310,16 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 .gb-who{font-family:var(--title); font-size:14px; color:var(--wine); letter-spacing:.04em}
 .gb-msg{font-family:var(--serif); font-size:14.5px; line-height:1.85; color:var(--ink-soft); margin-top:4px}
 .gb-when{font-family:var(--ui); font-size:8.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--rose); margin-top:6px}
+.gb-item.pending{opacity:.55}
+/* Senarai penuh boleh jadi sangat panjang, jadi hadkan tingginya dan
+   biarkan ia menatal sendiri, bukan menolak seksyen lain ke bawah. */
+.gb-list-open{max-height:56vh; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-right:6px}
+.gb-more{
+  display:block; margin:16px auto 0; padding:5px 2px; background:none; border:none; cursor:pointer;
+  font-family:var(--ui); font-size:9px; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--wine); border-bottom:1px solid var(--rose-pale);
+}
+.gb-more:hover{color:var(--rose)}
 
 /* closing */
 .closing{position:relative; padding:96px 52px calc(var(--navh) + 56px); text-align:center; overflow:hidden}
@@ -618,6 +628,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
     <div class="gb-count" id="gbCount"></div>
     <div class="gb" id="gbList" aria-live="polite"></div>
+    <button class="gb-more" id="gbMore" hidden></button>
   </section>
 
   <!-- ─────────────────────────── HUBUNGI ──────────────────────── -->
@@ -736,7 +747,11 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     venue   : "Asiana Grand Hall Selayang, Emerald Avenue, 68100 Batu Caves, Selangor",
     startISO: "2026-11-29T11:00:00+08:00",
     endISO  : "2026-11-29T16:30:00+08:00",
-    familyWA: "60123668030"
+    familyWA: "60123564403",
+    /* Apps Script web app yang menyokong Google Sheet ucapan — sama seperti
+       kad sage, jadi kedua-dua kad menulis ke helaian yang sama.
+       Lihat SETUP-GUESTBOOK.md dalam folder `digital card`. */
+    gbApi   : "https://script.google.com/macros/s/AKfycbyAbxj2WaDpBpohmY2IeS_-NqKRryUmfoqOoCZgqMebVc15uEVC09Eop1ljdUEp9d0i/exec"
   };
 
   var $  = function(s){ return document.querySelector(s); };
@@ -839,47 +854,86 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   /* Kalendar: fail statik majlis.ics, tiada JS. Kalau butiran majlis berubah,
      kemas kini DTSTART/DTEND dalam majlis.ics sekali dengan EVENT di atas. */
 
-  /* ───────────── guestbook (local + WhatsApp) ───────────── */
-  var KEY = "kad-burgundy-ucapan";
-  var listEl = $("#gbList"), countEl = $("#gbCount");
+  /* ───────────── guestbook ─────────────
+     Ucapan disimpan dalam Google Sheet melalui Apps Script, jadi SEMUA tetamu
+     nampak dinding ucapan yang sama. Versi lama guna localStorage sahaja,
+     yang bermakna setiap tetamu hanya nampak ucapannya sendiri.
+     Salinan tetap dihantar ke WhatsApp supaya pengantin dapat notifikasi. */
+  var GB_API = EVENT.gbApi;
+  var listEl = $("#gbList"), countEl = $("#gbCount"), moreEl = $("#gbMore");
+  var wishes = [], expanded = false;
+  var SHOW = 4;                                   // berapa yang dipapar sebelum "lihat semua"
+  var BULAN = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
 
-  function load(){
-    try{ return JSON.parse(localStorage.getItem(KEY) || "[]"); }
-    catch(e){ return []; }
-  }
-  function render(){
-    var items = load();
-    countEl.textContent = items.length ? items.length + " Ucapan" : "Jadilah yang pertama";
-    listEl.innerHTML = items.map(function(it){
-      return '<div class="gb-item"><div class="gb-who">' + esc(it.n) +
-             '</div><div class="gb-msg">' + esc(it.m) +
-             '</div><div class="gb-when">' + esc(it.d) + '</div></div>';
-    }).join("");
-  }
   function esc(s){
     return String(s).replace(/[&<>"']/g, function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
     });
   }
+  function stamp(iso){
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return "";
+    return d.getDate() + " " + BULAN[d.getMonth()] + " " + d.getFullYear();
+  }
+
+  function render(){
+    if(!wishes.length){
+      countEl.textContent = "Jadilah yang pertama";
+      listEl.textContent = "";
+      listEl.className = "gb";
+      moreEl.hidden = true;
+      return;
+    }
+    countEl.textContent = wishes.length + " Ucapan";
+    listEl.innerHTML = (expanded ? wishes : wishes.slice(0, SHOW)).map(function(w){
+      return '<div class="gb-item' + (w.pending ? ' pending' : '') + '">' +
+             '<div class="gb-who">' + esc(w.name) + '</div>' +
+             '<div class="gb-msg">' + esc(w.msg) + '</div>' +
+             '<div class="gb-when">' + (w.pending ? "Menghantar&hellip;" : esc(stamp(w.time))) +
+             '</div></div>';
+    }).join("");
+    listEl.className = "gb" + (expanded ? " gb-list-open" : "");
+    moreEl.hidden = wishes.length <= SHOW;
+    moreEl.textContent = expanded ? "Tunjuk kurang" : ("Lihat semua " + wishes.length + " ucapan");
+  }
+  moreEl.addEventListener("click", function(){ expanded = !expanded; render(); });
+
+  function loadWishes(){
+    if(!GB_API || !window.fetch) return;
+    fetch(GB_API, {cache:"no-store"})
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.wishes){ wishes = d.wishes; render(); } })
+      .catch(function(){ /* kekalkan apa yang sudah ada di skrin */ });
+  }
 
   $("#gbSend").addEventListener("click", function(){
     var n = $("#gbName").value.trim(), m = $("#gbMsg").value.trim();
     if(!n || !m){ alert("Sila isi nama dan ucapan anda."); return; }
-    var items = load();
-    items.unshift({
-      n:n, m:m,
-      d:new Date().toLocaleDateString("ms-MY", {day:"numeric", month:"short", year:"numeric"})
-    });
-    try{ localStorage.setItem(KEY, JSON.stringify(items.slice(0,80))); }catch(e){}
-    $("#gbName").value = ""; $("#gbMsg").value = "";
-    render();
+
+    /* Dibuka terus dalam pengendali klik. Kalau ditangguh sehingga selepas
+       fetch selesai, Safari menganggapnya popup dan menyekatnya. */
     window.open(
       "https://wa.me/" + EVENT.familyWA + "?text=" +
       encodeURIComponent("Ucapan daripada " + n + ":\n\n" + m),
       "_blank", "noopener"
     );
+
+    $("#gbName").value = ""; $("#gbMsg").value = "";
+    var mine = { name:n, msg:m, time:new Date().toISOString(), pending:true };
+    wishes.unshift(mine); render();
+
+    if(!GB_API || !window.fetch) return;
+    var btn = $("#gbSend");
+    btn.disabled = true;
+    /* Badan rentetan biasa supaya ini kekal "simple request" — Apps Script
+       tidak boleh menjawab preflight CORS. */
+    fetch(GB_API, { method:"POST", body: JSON.stringify({ name:n, msg:m }) })
+      .then(function(){ mine.pending = false; render(); loadWishes(); })
+      .catch(function(){ mine.pending = false; render(); })
+      .then(function(){ btn.disabled = false; });
   });
-  render();
+
+  loadWishes();
 
   /* ───────────── gallery layout ─────────────
      CSS `columns` fills column one to the bottom before starting column two,
