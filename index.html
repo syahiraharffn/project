@@ -842,12 +842,15 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   function startReveal(){ $$(".rv").forEach(function(el){ io.observe(el); }); }
 
   /* ───────────── hanyutan pembuka ─────────────
-     Sebaik jemputan dibuka, halaman menghanyut turun perlahan sekali sahaja
-     supaya tetamu nampak ada kandungan di bawah. Ia berhenti serta-merta
-     pada sentuhan, skrol atau kekunci pertama, dan tidak berulang lagi. */
+     Sebaik jemputan dibuka, halaman menghanyut turun perlahan sekali sahaja,
+     dari atas hingga ke hujung kad, supaya tetamu boleh menontonnya tanpa
+     menyentuh apa-apa. Berhenti serta-merta pada sentuhan, skrol atau kekunci
+     pertama, dan tidak berulang lagi. */
   var DRIFT_EVENTS = ["wheel", "touchstart", "keydown", "mousedown"];
-  var drifting = false, driftRaf = 0, driftLast = 0, driftEnd = 0;
-  var driftBegan = 0, driftStuck = 0, driftPrevY = -1;
+  var DRIFT_SPEED  = 0.085;      // px per milisaat (85px sesaat). Naikkan untuk laju, turunkan untuk perlahan.
+  var DRIFT_MAX_MS = 180000;     // brek terakhir; perjalanan penuh jauh lebih pendek
+  var drifting = false, driftRaf = 0, driftLast = 0;
+  var driftBegan = 0, driftStuck = 0, driftPrevY = -1, driftPos = 0;
 
   function stopDrift(){
     if(!drifting) return;
@@ -857,37 +860,45 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     document.documentElement.style.scrollBehavior = "";   // pulangkan skrol lancar untuk pautan nav
   }
 
+  function driftBottom(){
+    /* Dikira semula setiap bingkai: gambar galeri dimuat malas, jadi halaman
+       memanjang sambil hanyutan berjalan. */
+    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  }
+
   function driftStep(ts){
     if(!drifting) return;
     if(!driftLast){ driftLast = ts; driftBegan = ts; }
     var dt = Math.min(ts - driftLast, 50);                // lindung daripada lompatan bila tab tidak aktif
     driftLast = ts;
+    if(ts - driftBegan > DRIFT_MAX_MS){ stopDrift(); return; }
 
-    var y = window.pageYOffset;
-    if(y >= driftEnd - 1){ stopDrift(); return; }
+    var y = window.pageYOffset, bottom = driftBottom();
 
-    /* Dua brek keselamatan supaya gelung ini mustahil berjalan selamanya:
-       had masa, dan had bila skrol langsung tidak bergerak. */
-    if(ts - driftBegan > 12000){ stopDrift(); return; }
-    if(Math.abs(y - driftPrevY) < 0.5){
-      if(++driftStuck > 30){ stopDrift(); return; }
+    /* Kedudukan disimpan sebagai nombor pecahan sendiri. Versi pertama membaca
+       semula pageYOffset setiap bingkai, jadi baki pecahan hilang setiap kali
+       dan pergerakan menjadi tersekat-sekat. */
+    driftPos = Math.min(driftPos + dt * DRIFT_SPEED, bottom);
+    window.scrollTo(0, driftPos);
+
+    if(driftPos >= bottom - 0.5){ stopDrift(); return; }   // sampai hujung kad
+
+    if(Math.abs(y - driftPrevY) < 0.5){                    // skrol langsung tak bergerak
+      if(++driftStuck > 40){ stopDrift(); return; }
     } else {
       driftStuck = 0;
     }
     driftPrevY = y;
 
-    window.scrollTo(0, Math.min(y + dt * 0.15, driftEnd));   // lebih kurang 150px sesaat
     driftRaf = requestAnimationFrame(driftStep);
   }
 
   function startDrift(){
     if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if(window.pageYOffset > 20) return;                   // tetamu sudah skrol sendiri
-    var first = document.querySelector(".shell > .sec");
-    if(!first) return;
-    driftEnd = first.getBoundingClientRect().top + window.pageYOffset - 6;
-    if(driftEnd <= 0) return;
+    if(driftBottom() < 40) return;
     drifting = true;
+    driftPos = window.pageYOffset;
     driftLast = 0; driftBegan = 0; driftStuck = 0; driftPrevY = -1;
     /* scroll-behavior:smooth akan bergaduh dengan setiap panggilan scrollTo */
     document.documentElement.style.scrollBehavior = "auto";
