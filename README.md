@@ -103,11 +103,39 @@ masih kosong — slot untuk gambar 5 sahabat dan gambar kumpulan besar keluarga.
 Susunan grid ikut turutan nama fail. Saiz elok: sisi panjang lebih kurang 820px,
 JPEG kualiti ~80 (kekalkan di bawah ~120 KB sefail supaya kad kekal ringan).
 
+## Menyunting berdua
+
+Repo: <https://github.com/syahiraharffn/project> — Syahirah pemilik, Wan akses tulis.
+
+Sentiasa tarik dahulu sebelum mula menyunting:
+
+```bash
+git pull
+```
+
+Selepas siap:
+
+```bash
+git add -A
+git commit -m "apa yang diubah"
+git push
+```
+
+Kalau dua-dua sunting `index.html` pada masa yang sama, git akan minta
+selesaikan konflik. Cara paling mudah mengelak: beritahu satu sama lain
+sebelum mula, atau bahagi tugas — contohnya seorang urus teks dan butiran
+majlis, seorang lagi urus gambar galeri.
+
 ## Sebelum diedarkan
 
-1. **Deploy dahulu** — fail tempatan tidak boleh dikongsi melalui WhatsApp.
-   Pilihan paling mudah: repo baharu + GitHub Pages, sama seperti
-   `wanfaizzal.github.io/kahwin`.
+1. **Repo ini `private`, jadi GitHub Pages belum boleh dihidupkan** pada pelan
+   percuma. Untuk dapat pautan yang boleh dihantar melalui WhatsApp:
+   Settings -> General -> Change visibility -> **Public**, kemudian
+   Settings -> Pages -> Deploy from a branch -> `main` / `/ (root)`.
+   Pautan akan menjadi `https://syahiraharffn.github.io/project/`.
+
+   Ingat: menjadikannya public bermakna gambar keluarga dan nombor telefon
+   dalam kad boleh dilihat oleh sesiapa sahaja yang ada pautan itu.
 2. Jika kad fizikal akan menggunakan kad ini, **kod QR perlu dijana semula**
    kerana URL berbeza.
 3. Tambah `og-image.jpg` + meta `og:image` supaya pratonton WhatsApp
