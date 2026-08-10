@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" fill="currentColor" aria-hidden="true">
+<!-- Lapisan bunga sengaja TIADA penapis. WebKit (iOS Safari) meraster mana-mana
+     subpokok bertapis ke dalam penimbal saiz tetap, lalu menskalakannya semula
+     ke skrin Retina - hasilnya bunga nampak kabur pada iPhone. Tanpa penapis,
+     bunga kekal vektor dan tajam pada sebarang ketumpatan piksel.
+     Hanya lapisan wash yang bertapis, dan lapisan itu memang sepatutnya kabur. -->
 <defs>
-<filter id="wcC" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
-<feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="3" seed="9" result="n"/>
-<feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="RndF" yChannelSelector="G"/>
-<feGaussianBlur stdDeviation="0.4"/>
-</filter>
 <filter id="blurC" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="26"/></filter>
 <g id="fl">
 <ellipse cx="0" cy="-4.9" rx="4" ry="5.1"/><ellipse cx="4.9" cy="0" rx="5.1" ry="4"/>
@@ -100,7 +100,7 @@
 <ellipse cx="335.5" cy="67.72" rx="20.87" ry="22.18" fill="#DFBCC2" opacity="0.21"/>
 
 </g>
-<g filter="url(#wcC)" style="mix-blend-mode:multiply">
+<g style="mix-blend-mode:multiply">
 <g opacity=".9">
 <use href="#sprig3" color="#576F4F" transform="translate(178.27,82.04) rotate(160.75) scale(1.07)" opacity="0.9"/>
 <use href="#sprig3" color="#61795A" transform="translate(190.8,41.28) rotate(188.03) scale(1.01)" opacity="0.85"/>

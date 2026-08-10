@@ -66,7 +66,6 @@ a{color:inherit}
   position:relative; width:100%; max-width:var(--shell); height:100%;
   margin:0 auto; display:grid; place-items:center; text-align:center; overflow:hidden;
 }
-#gate .frame{transform:scale(1.08)}
 .g-body{position:relative; z-index:2; padding:0 46px; animation:rise 1.1s .15s both}
 .g-mono{
   font-family:var(--script); font-size:74px; line-height:1; color:var(--wine);
@@ -97,8 +96,9 @@ body.opened #gate{opacity:0; visibility:hidden}
   position:relative; min-height:100vh; min-height:100svh;
   display:grid; place-items:center; text-align:center; overflow:hidden;
 }
-.hero .frame{animation:breathe 26s ease-in-out infinite alternate}
-@keyframes breathe{from{transform:scale(1)}to{transform:scale(1.07)}}
+/* Tiada transform mahupun animasi pada .frame: Safari meraster imej yang
+   ditransform sekali sahaja lalu menskalakannya, jadi bunga hilang ketajaman
+   pada skrin Retina. */
 .hero-body{position:relative; z-index:2; padding:0 44px 92px}
 /* soft ivory veil so text never fights a flower behind it */
 .hero-body::before,.closing-body::before,.g-body::before{
@@ -383,7 +383,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 <!-- ══════════════════════════════ GATE ══════════════════════════════ -->
 <div id="gate">
   <div class="g-inner">
-    <img class="frame" src="assets/bingkai-bunga.svg" alt="">
+    <img class="frame" src="assets/bingkai-bunga.svg?v=2" alt="">
     <div class="g-body">
       <div class="g-mono">F&amp;S</div>
       <div class="g-kick">Walimatul Urus</div>
@@ -404,7 +404,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   <!-- ─────────────────────────── HERO ─────────────────────────── -->
   <section class="hero" id="atas">
-    <img class="frame" src="assets/bingkai-bunga.svg" alt="">
+    <img class="frame" src="assets/bingkai-bunga.svg?v=2" alt="">
     <div class="petals" id="petals"></div>
 
     <div class="hero-body">
@@ -437,10 +437,10 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   <!-- ─────────────────────────── SALAM ────────────────────────── -->
   <section class="sec">
-    <img class="corner tl" src="assets/sudut-bunga.svg" alt="">
+    <img class="corner tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <p class="arab rv" lang="ar" dir="rtl">&#1575;&#1604;&#1587;&#1617;&#1614;&#1604;&#1614;&#1575;&#1605;&#1615; &#1593;&#1614;&#1604;&#1614;&#1610;&#1618;&#1603;&#1615;&#1605;&#1618; &#1608;&#1614;&#1585;&#1614;&#1581;&#1618;&#1605;&#1614;&#1577;&#1615; &#1575;&#1604;&#1604;&#1607;&#1616; &#1608;&#1614;&#1576;&#1614;&#1585;&#1614;&#1603;&#1614;&#1575;&#1578;&#1615;&#1607;&#1615;</p>
     <div class="eyebrow rv d1">Assalamualaikum &amp; Salam Sejahtera</div>
-    <img class="divider rv d1" src="assets/garis-bunga.svg" alt="">
+    <img class="divider rv d1" src="assets/garis-bunga.svg?v=2" alt="">
     <p class="body-txt rv d2">
       Dengan penuh rasa kesyukuran dan rendah hati, kami ingin menjemput
       Tan Sri / Puan Sri / Dato&rsquo; Sri / Datin Sri / Dato&rsquo; / Datin / Tuan / Puan / Encik / Cik
@@ -463,12 +463,12 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     </div>
 
     <div class="couple rv d4">
-      <img class="divider" src="assets/garis-bunga.svg" alt="">
+      <img class="divider" src="assets/garis-bunga.svg?v=2" alt="">
       <div class="cn">Wan Rusyhuddeen Faizzal</div>
       <div class="cw">dengan pilihan hatinya</div>
       <div class="cn">Nur Syahirah</div>
     </div>
-    <img class="corner br" src="assets/sudut-bunga.svg" alt="">
+    <img class="corner br" src="assets/sudut-bunga.svg?v=2" alt="">
   </section>
 
   <!-- ────────────────────── TARIKH & MASA ─────────────────────── -->
@@ -501,7 +501,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </a>
     </div>
 
-    <img class="divider rv d3" src="assets/garis-bunga.svg" alt="">
+    <img class="divider rv d3" src="assets/garis-bunga.svg?v=2" alt="">
 
     <div class="eyebrow rv">Aturcara</div>
     <h2 class="h2 rv" style="margin-bottom:24px">Atur Cara Majlis</h2>
@@ -529,7 +529,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </div>
     </div>
 
-    <img class="divider rv" src="assets/garis-bunga.svg" alt="">
+    <img class="divider rv" src="assets/garis-bunga.svg?v=2" alt="">
 
     <div class="eyebrow rv">Countdown</div>
     <h2 class="h2 rv" style="margin-bottom:22px">Menghitung Hari</h2>
@@ -543,7 +543,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   <!-- ─────────────────────────── LOKASI ───────────────────────── -->
   <section class="sec" id="lokasi">
-    <img class="corner tl" src="assets/sudut-bunga.svg" alt="">
+    <img class="corner tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <div class="eyebrow rv">Venue</div>
     <h2 class="h2 rv">Lokasi Majlis</h2>
     <div class="sub rv">Location</div>
@@ -563,7 +563,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     </div>
 
     <div class="rv d3">
-      <img class="divider" src="assets/garis-bunga.svg" alt="">
+      <img class="divider" src="assets/garis-bunga.svg?v=2" alt="">
       <div class="eyebrow">Pintu Masuk</div>
       <h2 class="h2" style="margin-bottom:4px">Arah Masuk</h2>
       <div class="sub">Masuk dari Jalan PS 7, Batu Caves</div>
@@ -575,7 +575,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </figure>
       <p class="note">Parkir tersedia di kawasan bangunan.</p>
     </div>
-    <img class="corner br" src="assets/sudut-bunga.svg" alt="">
+    <img class="corner br" src="assets/sudut-bunga.svg?v=2" alt="">
   </section>
   <!-- ─────────────────────────── GALERI ───────────────────────── -->
   <section class="sec tint" id="galeri">
@@ -622,7 +622,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   <!-- ─────────────────────────── HUBUNGI ──────────────────────── -->
   <section class="sec tint" id="hubungi">
-    <img class="corner tl" src="assets/sudut-bunga.svg" alt="">
+    <img class="corner tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <div class="eyebrow rv">Contact</div>
     <h2 class="h2 rv">Hubungi Kami</h2>
     <div class="sub rv">Sebarang pertanyaan, hubungi wakil keluarga</div>
@@ -660,12 +660,12 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
         </div>
       </div>
     </div>
-    <img class="corner br" src="assets/sudut-bunga.svg" alt="">
+    <img class="corner br" src="assets/sudut-bunga.svg?v=2" alt="">
   </section>
 
   <!-- ────────────────────────── PENUTUP ───────────────────────── -->
   <section class="closing">
-    <img class="frame" src="assets/bingkai-bunga.svg" alt="">
+    <img class="frame" src="assets/bingkai-bunga.svg?v=2" alt="">
     <div class="closing-body">
       <p class="body-txt rv" style="font-style:italic">
         &ldquo;Dan di antara tanda-tanda kekuasaan-Nya, Dia menciptakan untukmu pasangan hidup
@@ -673,7 +673,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
         antara kamu rasa kasih dan sayang.&rdquo;
       </p>
       <div class="eyebrow rv d1" style="margin-top:14px">Ar-Rum : 21</div>
-      <img class="divider rv d1" src="assets/garis-bunga.svg" alt="">
+      <img class="divider rv d1" src="assets/garis-bunga.svg?v=2" alt="">
       <p class="body-txt rv d2">
         Kehadiran dan doa restu daripada Dato&rsquo; / Datin / Tuan / Puan
         amatlah kami hargai.

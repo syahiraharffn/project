@@ -197,19 +197,19 @@ function Wrap-Svg {
   param($w, $h, $defs, $wash, $greens, $blooms, $tops, $id)
   @"
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $w $h" fill="currentColor" aria-hidden="true">
+<!-- Lapisan bunga sengaja TIADA penapis. WebKit (iOS Safari) meraster mana-mana
+     subpokok bertapis ke dalam penimbal saiz tetap, lalu menskalakannya semula
+     ke skrin Retina - hasilnya bunga nampak kabur pada iPhone. Tanpa penapis,
+     bunga kekal vektor dan tajam pada sebarang ketumpatan piksel.
+     Hanya lapisan wash yang bertapis, dan lapisan itu memang sepatutnya kabur. -->
 <defs>
-<filter id="wc$id" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
-<feTurbulence type="fractalNoise" baseFrequency="0.024" numOctaves="3" seed="9" result="n"/>
-<feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="RndF" yChannelSelector="G"/>
-<feGaussianBlur stdDeviation="0.4"/>
-</filter>
 <filter id="blur$id" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="26"/></filter>
 $defs
 </defs>
 <g filter="url(#blur$id)">
 $wash
 </g>
-<g filter="url(#wc$id)" style="mix-blend-mode:multiply">
+<g style="mix-blend-mode:multiply">
 <g opacity=".9">
 $greens
 </g>
