@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Kad Digital//Walimatulurus Faizzal Syahirah//MS
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:walimatulurus-faizzal-syahirah-20261129@kad-digital
+DTSTAMP:20260810T000000Z
+DTSTART:20261129T030000Z
+DTEND:20261129T083000Z
+SUMMARY:Walimatulurus Wan Rusyhuddeen Faizzal & Nur Syahirah
+LOCATION:Asiana Grand Hall Selayang\, Emerald Avenue\, 68100 Batu Caves\, Selangor
+DESCRIPTION:Jemputan Walimatulurus.\nJamuan 11.00 pagi - 4.30 petang.\nKetibaan pengantin 12.30 tengah hari.
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Walimatulurus Faizzal & Syahirah esok
+END:VALARM
+END:VEVENT
+END:VCALENDAR

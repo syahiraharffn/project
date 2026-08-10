@@ -32,7 +32,7 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth; -webkit-text-size-adjust:100%; text-size-adjust:100%}
 body{
   margin:0; background:
     radial-gradient(1200px 700px at 50% -10%, #F8E9E6 0%, transparent 60%),
@@ -83,7 +83,7 @@ a{color:inherit}
 .g-btn{
   margin-top:30px; font-family:var(--ui); font-size:11px; letter-spacing:.28em; text-transform:uppercase;
   padding:15px 34px; border:1px solid var(--rose); border-radius:999px; background:rgba(255,255,255,.82);
-  color:var(--wine); cursor:pointer; backdrop-filter:blur(6px); transition:.35s;
+  color:var(--wine); cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:.35s;
 }
 .g-btn:hover{background:var(--wine); border-color:var(--wine); color:#fff; letter-spacing:.32em}
 body.opened #gate{opacity:0; visibility:hidden}
@@ -330,7 +330,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 .fbtn{
   width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
   background:rgba(74,30,40,.88); color:#fff; display:grid; place-items:center;
-  box-shadow:0 6px 18px rgba(112,48,60,.28); backdrop-filter:blur(8px); transition:.3s;
+  box-shadow:0 6px 18px rgba(112,48,60,.28); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); transition:.3s;
 }
 .fbtn:hover{background:var(--wine)}
 .fbtn svg{width:17px; height:17px; fill:currentColor}
@@ -343,7 +343,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   bottom:14px; width:min(412px, calc(100vw - 28px));
   display:grid; grid-template-columns:repeat(5,1fr);
   padding:11px 6px calc(11px + env(safe-area-inset-bottom,0px));
-  border-radius:22px; background:rgba(255,252,251,.82); backdrop-filter:blur(14px);
+  border-radius:22px; background:rgba(255,252,251,.82); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
   box-shadow:0 10px 30px -8px rgba(112,48,60,.3), 0 0 0 1px rgba(168,94,114,.18);
 }
 .nav a{
@@ -492,10 +492,13 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     </div>
 
     <div class="btn-row rv d3">
-      <button class="btn ghost" id="icsBtn">
+      <!-- Pautan terus ke fail .ics sebenar. iOS Safari abaikan atribut
+           `download` pada blob URL, jadi butang lama langsung tak berfungsi
+           pada iPhone; pautan biasa membuka terus sheet Tambah ke Kalendar. -->
+      <a class="btn ghost" href="majlis.ics" type="text/calendar">
         <svg viewBox="0 0 24 24"><path d="M7 2h2v3H7zm8 0h2v3h-2zM4 6h16a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm1 4v9h14v-9z"/></svg>
         Simpan Ke Kalendar
-      </button>
+      </a>
     </div>
 
     <img class="divider rv d3" src="assets/garis-bunga.svg" alt="">
@@ -755,14 +758,20 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   function playMusic(){
     if(!bgm) return;
-    bgm.volume = 0;
+    /* iOS mengabaikan tetapan volume — kelantangan dikawal butang telefon
+       sahaja. Kesan pudar hanya dijalankan kalau tetapan itu benar-benar
+       berkesan, jika tidak muzik terus bermain pada kelantangan penuh. */
+    try{ bgm.volume = 0; }catch(e){}
+    var canFade = (bgm.volume === 0);
     var p = bgm.play();
     if(p && p.catch) p.catch(function(){});
-    var v = 0, fade = setInterval(function(){
-      v += 0.04;
-      if(v >= 0.55){ v = 0.55; clearInterval(fade); }
-      try{ bgm.volume = v; }catch(e){}
-    }, 120);
+    if(canFade){
+      var v = 0, fade = setInterval(function(){
+        v += 0.04;
+        if(v >= 0.55){ v = 0.55; clearInterval(fade); }
+        try{ bgm.volume = v; }catch(e){}
+      }, 120);
+    }
     musicBtn.classList.add("playing");
   }
 
@@ -827,29 +836,8 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   }
   tick(); setInterval(tick, 1000);
 
-  /* ───────────── add to calendar (.ics) ───────────── */
-  function icsStamp(iso){
-    return new Date(iso).toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
-  }
-  $("#icsBtn").addEventListener("click", function(){
-    var ics = [
-      "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Kad Digital//MS",
-      "BEGIN:VEVENT",
-      "UID:" + Date.now() + "@kad-digital",
-      "DTSTAMP:" + icsStamp(new Date().toISOString()),
-      "DTSTART:" + icsStamp(EVENT.startISO),
-      "DTEND:"   + icsStamp(EVENT.endISO),
-      "SUMMARY:" + EVENT.title,
-      "LOCATION:" + EVENT.venue.replace(/,/g,"\\,"),
-      "DESCRIPTION:Jemputan Walimatulurus",
-      "END:VEVENT","END:VCALENDAR"
-    ].join("\r\n");
-    var url = URL.createObjectURL(new Blob([ics], {type:"text/calendar;charset=utf-8"}));
-    var a = document.createElement("a");
-    a.href = url; a.download = "Walimatulurus-Faizzal-Syahirah.ics";
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
-  });
+  /* Kalendar: fail statik majlis.ics, tiada JS. Kalau butiran majlis berubah,
+     kemas kini DTSTART/DTEND dalam majlis.ics sekali dengan EVENT di atas. */
 
   /* ───────────── guestbook (local + WhatsApp) ───────────── */
   var KEY = "kad-burgundy-ucapan";
