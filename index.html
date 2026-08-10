@@ -218,7 +218,7 @@ body.opened #gate{opacity:0; visibility:hidden}
 
 /* location */
 .loc-name{font-family:var(--title); font-size:20px; letter-spacing:.05em; color:var(--wine); margin-bottom:8px}
-.loc-addr{font-family:var(--serif); font-size:15px; line-height:1.9; color:var(--ink-soft)}
+.loc-addr{font-family:var(--serif); font-size:15px; line-height:1.7; color:var(--ink-soft)}
 .note{font-family:var(--serif); font-style:italic; font-size:13px; color:var(--ink-soft); margin-top:20px}
 
 /* entrance photo */
@@ -301,12 +301,12 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 /* guestbook */
 .gb{max-width:var(--block); margin:0 auto; text-align:left}
 .gb input,.gb textarea{
-  width:100%; margin-bottom:10px; padding:13px 15px; border:1px solid var(--line); border-radius:3px;
+  width:100%; margin-bottom:8px; padding:11px 14px; border:1px solid var(--line); border-radius:3px;
   background:rgba(255,255,255,.8); font-family:var(--serif); font-size:15px; color:var(--ink); resize:vertical;
 }
 .gb input:focus,.gb textarea:focus{outline:none; border-color:var(--rose)}
 .gb .btn{width:100%}
-.gb-count{font-family:var(--ui); font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:var(--rose); margin:26px 0 12px; text-align:center}
+.gb-count{font-family:var(--ui); font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:var(--rose); margin:18px 0 10px; text-align:center}
 /* Ucapan dipaparkan sebagai kad notifikasi */
 .gb-item{
   position:relative; display:grid; grid-template-columns:34px 1fr; gap:11px;
@@ -585,11 +585,10 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   <section class="sec tint" id="lokasi">
     <img class="corner is-tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <div class="eyebrow rv">Venue</div>
-    <h2 class="h2 rv">Lokasi Majlis</h2>
-    <div class="sub rv">Location</div>
+    <h2 class="h2 rv" style="margin-bottom:18px">Lokasi Majlis</h2>
 
     <div class="loc-name rv d1">Asiana Grand Hall Selayang</div>
-    <div class="loc-addr rv d1">Emerald Avenue<br>68100 Batu Caves<br>Selangor</div>
+    <div class="loc-addr rv d1">Emerald Avenue, 68100 Batu Caves<br>Selangor</div>
 
     <div class="btn-row rv d2">
       <a class="btn" id="mapBtn" href="#" target="_blank" rel="noopener">
@@ -602,15 +601,9 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
       </a>
     </div>
 
-    <img class="corner is-br" src="assets/sudut-bunga.svg?v=2" alt="">
-  </section>
 
-  <!-- ────────────────────────── ARAH MASUK ────────────────────── -->
-  <section class="sec" id="masuk">
-    <div class="rv">
-      <div class="eyebrow">Pintu Masuk</div>
-      <h2 class="h2" style="margin-bottom:4px">Arah Masuk</h2>
-      <div class="sub">Masuk dari Jalan PS 7, Batu Caves</div>
+    <div class="rv d3">
+      <div class="eyebrow" style="margin-top:30px">Pintu Masuk &middot; dari Jalan PS 7</div>
       <figure class="ent">
         <img src="assets/pintu-masuk.jpg" loading="lazy"
              alt="Pandangan jalan dari Jalan PS 7 ke arah pintu masuk Asiana Grand Hall Selayang">
@@ -622,7 +615,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     <img class="corner is-br" src="assets/sudut-bunga.svg?v=2" alt="">
   </section>
   <!-- ─────────────────────────── GALERI ───────────────────────── -->
-  <section class="sec tint" id="galeri">
+  <section class="sec" id="galeri">
     <div class="eyebrow rv">Gallery</div>
     <h2 class="h2 rv">Galeri Kenangan</h2>
     <div class="sub rv">Detik-detik indah yang telah kami lalui</div>
@@ -649,7 +642,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   </section>
 
   <!-- ─────────────────────────── HUBUNGI ──────────────────────── -->
-  <section class="sec" id="hubungi">
+  <section class="sec tint" id="hubungi">
     <img class="corner is-tl" src="assets/sudut-bunga.svg?v=2" alt="">
     <div class="eyebrow rv">Contact</div>
     <h2 class="h2 rv">Hubungi Kami</h2>
@@ -692,10 +685,9 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   </section>
 
   <!-- ─────────────────────────── UCAPAN ───────────────────────── -->
-  <section class="sec tint" id="ucapan">
+  <section class="sec" id="ucapan">
     <div class="eyebrow rv">Guestbook</div>
-    <h2 class="h2 rv">Ucapan &amp; Doa</h2>
-    <div class="sub rv">Tinggalkan sepatah dua kata buat pasangan pengantin</div>
+    <h2 class="h2 rv" style="margin-bottom:20px">Ucapan &amp; Doa</h2>
 
     <div class="gb rv d1">
       <input id="gbName" type="text" maxlength="40" placeholder="Nama anda" aria-label="Nama anda">
@@ -896,7 +888,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   var GB_API = EVENT.gbApi;
   var listEl = $("#gbList"), countEl = $("#gbCount"), moreEl = $("#gbMore");
   var wishes = [], expanded = false;
-  var SHOW = 3;                                   // berapa yang dipapar sebelum "lihat semua"
+  var SHOW = 2;                                   // berapa yang dipapar sebelum "lihat semua"
   var BULAN = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
 
   function esc(s){
