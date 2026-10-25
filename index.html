@@ -61,8 +61,26 @@ a{color:inherit}
 /* ═══════════════════════════════ gate ═════════════════════════════════ */
 #gate{
   position:fixed; inset:0; z-index:80; display:grid; place-items:center;
-  background:var(--paper); transition:opacity .9s ease, visibility .9s;
 }
+/* Dua daun pintu, setiap satu membawa separuh bingkai bunga. Bila jemputan
+   dibuka, ia terbelah dari tengah dan menggelongsor ke tepi. */
+.g-door{
+  position:absolute; inset:0; background:var(--paper); overflow:hidden;
+  transition:transform 1.6s cubic-bezier(.66,0,.18,1) .3s;
+}
+.g-door.l{-webkit-clip-path:inset(0 50% 0 0); clip-path:inset(0 50% 0 0)}
+.g-door.r{-webkit-clip-path:inset(0 0 0 50%); clip-path:inset(0 0 0 50%)}
+.g-door .g-art{position:relative; width:100%; max-width:var(--shell); height:100%; margin:0 auto}
+/* bayang lembut di sambungan, supaya terasa seperti dua daun yang berasingan */
+.g-door::after{
+  content:""; position:absolute; top:0; bottom:0; width:40px; opacity:0;
+  transition:opacity .5s ease .2s; pointer-events:none;
+}
+.g-door.l::after{right:50%; background:linear-gradient(to left, rgba(117,33,58,.16), transparent)}
+.g-door.r::after{left:50%;  background:linear-gradient(to right, rgba(117,33,58,.16), transparent)}
+body.opened .g-door::after{opacity:1}
+body.opened .g-door.l{transform:translateX(-51%)}
+body.opened .g-door.r{transform:translateX(51%)}
 #gate .g-inner{
   position:relative; width:100%; max-width:var(--shell); height:100%;
   margin:0 auto; display:grid; place-items:center; text-align:center; overflow:hidden;
@@ -86,7 +104,9 @@ a{color:inherit}
   color:var(--wine); cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:.35s;
 }
 .g-btn:hover{background:var(--wine); border-color:var(--wine); color:#fff; letter-spacing:.32em}
-body.opened #gate{opacity:0; visibility:hidden}
+body.opened #gate{visibility:hidden; pointer-events:none; transition:visibility 0s 2s}
+body.opened .g-body{animation:gOut .7s cubic-bezier(.4,0,.2,1) both}
+@keyframes gOut{to{opacity:0; transform:translateY(-16px) scale(.97); filter:blur(4px)}}
 
 /* ══════════════════════════════ hero ══════════════════════════════════ */
 .frame{
@@ -97,6 +117,10 @@ body.opened #gate{opacity:0; visibility:hidden}
   position:relative; min-height:100vh; min-height:100svh;
   display:grid; place-items:center; text-align:center; overflow:hidden;
 }
+/* Bingkai hero muncul perlahan di belakang pintu yang terbuka, supaya tidak
+   kelihatan seperti salinan bingkai pintu yang tertinggal. */
+.hero .frame{transition:opacity 1.8s ease .6s}
+body:not(.opened) .hero .frame{opacity:0}
 /* Tiada transform mahupun animasi pada .frame: Safari meraster imej yang
    ditransform sekali sahaja lalu menskalakannya, jadi bunga hilang ketajaman
    pada skrin Retina. */
@@ -422,8 +446,9 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
 <!-- ══════════════════════════════ GATE ══════════════════════════════ -->
 <div id="gate">
+  <div class="g-door l"><div class="g-art"><img class="frame" src="assets/bingkai-bunga.svg?v=2" alt=""></div></div>
+  <div class="g-door r"><div class="g-art"><img class="frame" src="assets/bingkai-bunga.svg?v=2" alt=""></div></div>
   <div class="g-inner">
-    <img class="frame" src="assets/bingkai-bunga.svg?v=2" alt="">
     <div class="g-body">
       <div class="g-mono">F&amp;S</div>
       <div class="g-kick">Walimatul Urus</div>
@@ -826,9 +851,9 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
     document.body.classList.add("opened");
     document.body.classList.remove("locked");
     playMusic();
-    startReveal();
     setTimeout(function(){ window.scrollTo(0,0); }, 40);
-    setTimeout(startDrift, 2600);            // biar hero sempat muncul dahulu
+    setTimeout(startReveal, 700);            // teks hero naik sambil pintu terbuka
+    setTimeout(startDrift, 3400);            // biar hero sempat muncul dahulu
   });
 
   /* ───────────── reveal on scroll ─────────────
