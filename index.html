@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Marcellus&family=Pinyon+Script&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/bingkai-bunga.webp">
 
 
 <style>
@@ -64,10 +65,13 @@ a{color:inherit}
   position:fixed; inset:0; z-index:80; display:grid; place-items:center;
 }
 /* Dua daun pintu, setiap satu membawa separuh bingkai bunga. Bila jemputan
-   dibuka, ia terbelah dari tengah dan menggelongsor ke tepi. */
+   dibuka, ia terbelah dari tengah dan menggelongsor ke tepi.
+   Pintu memakai bingkai-bunga.webp, salinan raster SVG yang sama. SVG asal
+   terlalu berat (~1800 bunga) untuk digerakkan: iOS terpaksa merasternya
+   semula ketika pintu mula bergerak, lalu skrin putih kosong ~1 saat. */
 .g-door{
-  position:absolute; inset:0; background:var(--paper); overflow:hidden;
-  transition:transform 1.6s cubic-bezier(.66,0,.18,1) .3s;
+  position:absolute; inset:0; background:var(--paper); overflow:hidden; will-change:transform;
+  transition:transform 1.6s cubic-bezier(.66,0,.18,1) .3s, opacity 1s ease 1s;
 }
 .g-door.l{-webkit-clip-path:inset(0 50% 0 0); clip-path:inset(0 50% 0 0)}
 .g-door.r{-webkit-clip-path:inset(0 0 0 50%); clip-path:inset(0 0 0 50%)}
@@ -80,6 +84,7 @@ a{color:inherit}
 .g-door.l::after{right:50%; background:linear-gradient(to left, rgba(117,33,58,.16), transparent)}
 .g-door.r::after{left:50%;  background:linear-gradient(to right, rgba(117,33,58,.16), transparent)}
 body.opened .g-door::after{opacity:1}
+body.opened .g-door{opacity:0}
 body.opened .g-door.l{transform:translateX(-51%)}
 body.opened .g-door.r{transform:translateX(51%)}
 #gate .g-inner{
@@ -118,10 +123,6 @@ body.opened .g-body{animation:gOut .7s cubic-bezier(.4,0,.2,1) both}
   position:relative; min-height:100vh; min-height:100svh;
   display:grid; place-items:center; text-align:center; overflow:hidden;
 }
-/* Bingkai hero muncul perlahan di belakang pintu yang terbuka, supaya tidak
-   kelihatan seperti salinan bingkai pintu yang tertinggal. */
-.hero .frame{transition:opacity 1.8s ease .6s}
-body:not(.opened) .hero .frame{opacity:0}
 /* Tiada transform mahupun animasi pada .frame: Safari meraster imej yang
    ditransform sekali sahaja lalu menskalakannya, jadi bunga hilang ketajaman
    pada skrin Retina. */
@@ -477,8 +478,8 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
 <!-- ══════════════════════════════ GATE ══════════════════════════════ -->
 <div id="gate">
-  <div class="g-door l"><div class="g-art"><img class="frame" src="assets/bingkai-bunga.svg?v=2" alt=""></div></div>
-  <div class="g-door r"><div class="g-art"><img class="frame" src="assets/bingkai-bunga.svg?v=2" alt=""></div></div>
+  <div class="g-door l"><div class="g-art"><img class="frame" src="assets/bingkai-bunga.webp" alt=""></div></div>
+  <div class="g-door r"><div class="g-art"><img class="frame" src="assets/bingkai-bunga.webp" alt=""></div></div>
   <div class="g-inner">
     <div class="g-body">
       <div class="g-mono">F&amp;S</div>
