@@ -66,12 +66,13 @@ a{color:inherit}
 }
 /* Dua daun pintu, setiap satu membawa separuh bingkai bunga. Bila jemputan
    dibuka, ia terbelah dari tengah dan menggelongsor ke tepi.
-   Pintu memakai bingkai-bunga.webp, salinan raster SVG yang sama. SVG asal
-   terlalu berat (~1800 bunga) untuk digerakkan: iOS terpaksa merasternya
-   semula ketika pintu mula bergerak, lalu skrin putih kosong ~1 saat. */
+   Semua bingkai penuh memakai bingkai-bunga.webp, salinan raster SVG yang
+   sama. SVG asal terlalu berat (~1800 bunga): iOS tidak melukis hero selagi
+   pintu menutupnya, jadi sebaik pintu bergerak ia terpaksa meraster SVG itu
+   buat kali pertama dan skrin menjadi putih kosong kira-kira sesaat. */
 .g-door{
-  position:absolute; inset:0; background:var(--paper); overflow:hidden; will-change:transform;
-  transition:transform 1.6s cubic-bezier(.66,0,.18,1) .3s, opacity 1s ease 1s;
+  position:absolute; inset:0; background:var(--paper); overflow:hidden; will-change:transform,opacity;
+  transition:transform 2.4s cubic-bezier(.45,.05,.2,1) .5s, opacity 1.4s ease 1.5s;
 }
 .g-door.l{-webkit-clip-path:inset(0 50% 0 0); clip-path:inset(0 50% 0 0)}
 .g-door.r{-webkit-clip-path:inset(0 0 0 50%); clip-path:inset(0 0 0 50%)}
@@ -79,7 +80,7 @@ a{color:inherit}
 /* bayang lembut di sambungan, supaya terasa seperti dua daun yang berasingan */
 .g-door::after{
   content:""; position:absolute; top:0; bottom:0; width:40px; opacity:0;
-  transition:opacity .5s ease .2s; pointer-events:none;
+  transition:opacity .8s ease .4s; pointer-events:none;
 }
 .g-door.l::after{right:50%; background:linear-gradient(to left, rgba(117,33,58,.16), transparent)}
 .g-door.r::after{left:50%;  background:linear-gradient(to right, rgba(117,33,58,.16), transparent)}
@@ -110,9 +111,9 @@ body.opened .g-door.r{transform:translateX(51%)}
   color:var(--wine); cursor:pointer; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:.35s;
 }
 .g-btn:hover{background:var(--wine); border-color:var(--wine); color:#fff; letter-spacing:.32em}
-body.opened #gate{visibility:hidden; pointer-events:none; transition:visibility 0s 2s}
-body.opened .g-body{animation:gOut .7s cubic-bezier(.4,0,.2,1) both}
-@keyframes gOut{to{opacity:0; transform:translateY(-16px) scale(.97); filter:blur(4px)}}
+body.opened #gate{visibility:hidden; pointer-events:none; transition:visibility 0s 3s}
+body.opened .g-body{animation:gOut .9s cubic-bezier(.4,0,.2,1) both}
+@keyframes gOut{to{opacity:0; transform:translateY(-18px) scale(.97)}}
 
 /* ══════════════════════════════ hero ══════════════════════════════════ */
 .frame{
@@ -499,7 +500,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   <!-- ─────────────────────────── HERO ─────────────────────────── -->
   <section class="hero" id="atas">
-    <img class="frame" src="assets/bingkai-bunga.svg?v=2" alt="">
+    <img class="frame" src="assets/bingkai-bunga.webp" alt="">
     <div class="petals" id="petals"></div>
 
     <div class="hero-body">
@@ -735,7 +736,7 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
 
   <!-- ────────────────────────── PENUTUP ───────────────────────── -->
   <section class="closing">
-    <img class="frame" src="assets/bingkai-bunga.svg?v=2" alt="">
+    <img class="frame" src="assets/bingkai-bunga.webp" alt="">
     <div class="closing-body">
       <p class="body-txt rv" style="font-style:italic">
         &ldquo;Dan di antara tanda-tanda kekuasaan-Nya, Dia menciptakan untukmu pasangan hidup
@@ -855,13 +856,31 @@ body.lb-open .nav,body.lb-open .floats{opacity:0; pointer-events:none; transitio
   });
   bgm.addEventListener("error", function(){ musicBtn.style.display = "none"; });
 
+  /* Nyahkod bingkai hero lebih awal, supaya ia sudah siap dilukis bila pintu terbuka. */
+  var heroFrame = $(".hero .frame");
+  var heroReady = (heroFrame.decode ? heroFrame.decode() : Promise.resolve()).catch(function(){});
+
+  var opening = false;
   $("#openBtn").addEventListener("click", function(){
-    document.body.classList.add("opened");
+    if(opening) return;
+    opening = true;
+    playMusic();                             // mesti dalam pengendali klik untuk iOS
+    window.scrollTo(0,0);
     document.body.classList.remove("locked");
-    playMusic();
-    setTimeout(function(){ window.scrollTo(0,0); }, 40);
-    setTimeout(startReveal, 700);            // teks hero naik sambil pintu terbuka
-    setTimeout(startDrift, 3400);            // biar hero sempat muncul dahulu
+    /* Tunggu bingkai siap (maksimum 600ms), kemudian dua bingkai paparan
+       supaya halaman di bawah sudah dilukis sebelum pintu mula bergerak. */
+    Promise.race([heroReady, new Promise(function(r){ setTimeout(r, 600); })]).then(function(){
+      var done = false;
+      function go(){
+        if(done) return;
+        done = true;
+        document.body.classList.add("opened");
+        setTimeout(startReveal, 1100);         // teks hero naik sambil pintu terbuka
+        setTimeout(startDrift, 4600);          // biar hero sempat muncul dahulu
+      }
+      requestAnimationFrame(function(){ requestAnimationFrame(go); });
+      setTimeout(go, 120);                     // sandaran jika rAF tertangguh
+    });
   });
 
   /* ───────────── reveal on scroll ─────────────
