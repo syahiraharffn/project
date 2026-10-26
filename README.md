@@ -105,7 +105,14 @@ JPEG kualiti ~80 (kekalkan di bawah ~120 KB sefail supaya kad kekal ringan).
 
 ## Menyunting berdua
 
-Repo: <https://github.com/syahiraharffn/project> — Syahirah pemilik, Wan akses tulis.
+Dua repo menyimpan kad yang sama:
+
+- <https://github.com/wanfaizzal/Faizzal_Syahirah_DigitalCard> (remote `faizzal`) —
+  milik Wan. Pautan kad: <https://wanfaizzal.github.io/Faizzal_Syahirah_DigitalCard/>
+- <https://github.com/syahiraharffn/project> (remote `origin`) — Syahirah pemilik,
+  Wan akses tulis. Pautan kad: <https://syahiraharffn.github.io/project/>
+
+Tolak ke kedua-duanya supaya dua pautan kekal sama: `git push origin main && git push faizzal main`.
 
 Sentiasa tarik dahulu sebelum mula menyunting:
 
@@ -128,14 +135,12 @@ majlis, seorang lagi urus gambar galeri.
 
 ## Sebelum diedarkan
 
-1. **Repo ini `private`, jadi GitHub Pages belum boleh dihidupkan** pada pelan
-   percuma. Untuk dapat pautan yang boleh dihantar melalui WhatsApp:
-   Settings -> General -> Change visibility -> **Public**, kemudian
-   Settings -> Pages -> Deploy from a branch -> `main` / `/ (root)`.
-   Pautan akan menjadi `https://syahiraharffn.github.io/project/`.
+1. Kedua-dua repo adalah **public** dan GitHub Pages sudah hidup (cawangan
+   `main`, folder root). Pautan untuk dihantar melalui WhatsApp:
+   `https://wanfaizzal.github.io/Faizzal_Syahirah_DigitalCard/`.
 
-   Ingat: menjadikannya public bermakna gambar keluarga dan nombor telefon
-   dalam kad boleh dilihat oleh sesiapa sahaja yang ada pautan itu.
+   Ingat: public bermakna gambar keluarga dan nombor telefon dalam kad boleh
+   dilihat oleh sesiapa sahaja yang ada pautan itu.
 2. Jika kad fizikal akan menggunakan kad ini, **kod QR perlu dijana semula**
    kerana URL berbeza.
 3. Tambah `og-image.jpg` + meta `og:image` supaya pratonton WhatsApp
